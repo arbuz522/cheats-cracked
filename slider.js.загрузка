@@ -1,0 +1,36 @@
+	let currentSlide = 0;
+	const slides = document.querySelectorAll('.slider img');
+
+	function showSlide(index) {
+		slides.forEach((slide, i) => {
+			slide.style.display = i === index ? 'block' : 'none';
+		});
+	}
+
+	function nextSlide() {
+		currentSlide = (currentSlide + 1) % slides.length;
+		showSlide(currentSlide);
+	}
+	setInterval(nextSlide, 3000); // Меняем изображение каждые 3 секунды
+	showSlide(currentSlide); // Показываем первый слайд
+	document.addEventListener("DOMContentLoaded", function() {
+		const videoContainers = document.querySelectorAll('.video-container');
+		const observer = new IntersectionObserver((entries, observer) => {
+			entries.forEach(entry => {
+				if(entry.isIntersecting) {
+					const container = entry.target;
+					const iframe = document.createElement('iframe');
+					iframe.src = container.getAttribute('data-src');
+					iframe.loading = "lazy";
+					iframe.frameBorder = "0";
+					iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+					iframe.allowFullscreen = true;
+					container.appendChild(iframe);
+					observer.unobserve(container);
+				}
+			});
+		});
+		videoContainers.forEach(container => {
+			observer.observe(container);
+		});
+	});
